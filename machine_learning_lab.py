@@ -4,6 +4,7 @@
 from mat import *
 from vec import *
 from cancer_data import *
+from matutil import *
 
 ## Task 1 ##
 def signum(u):
@@ -37,7 +38,6 @@ def fraction_wrong(A, b, w):
         >>> fraction_wrong(A, b, w)
         0.3333333333333333
     '''
-    count=0
     hypothesis_vec=signum(A*w)
     frac_wrong=sum([1 if hypothesis_vec[k]!=b[k] else 0 for k in b.D])/len(b.D)
     return frac_wrong
@@ -59,7 +59,11 @@ def loss(A, b, w):
         >>> loss(A, b, w)
         317
     '''
-    pass
+    hypothesis_vec=(A*w);
+    loss_vec=hypothesis_vec-b;
+    loss_func=sum([loss_vec[x]*loss_vec[x] for x in loss_vec.D])
+    return loss_func
+    
 
 ## Task 4 ##
 def find_grad(A, b, w):
@@ -77,7 +81,9 @@ def find_grad(A, b, w):
         >>> find_grad(A, b, w) == Vec({'B', 'A'},{'B': -290, 'A': 60})
         True
     '''
-    pass
+    A_rows=mat2rowdict(A)
+    grad_vec=sum([(A_rows[y]*w - b[y])*2*A_rows[y] for y in b.D])
+    return grad_vec
 
 ## Task 5 ##
 def gradient_descent_step(A, b, w, sigma):
@@ -98,8 +104,8 @@ def gradient_descent_step(A, b, w, sigma):
         >>> gradient_descent_step(A, b, w, sigma) == Vec({'B', 'A'},{'B': 27.0, 'A': -5.0})
         True
     '''
-    pass
-
+    w=w-(sigma*find_grad(A,b,w))
+    return w
 ## Ungraded task ##
 def gradient_descent(A, b, w, sigma, T):
     '''
